@@ -12,4 +12,4 @@ COPY . /app
 WORKDIR /app
 RUN go build bin/server.go
 
-CMD ['/app/server']
+CMD ["./server"]
