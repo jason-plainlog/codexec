@@ -15,7 +15,6 @@ var availableIDs = make(chan int, cfg.MAX_SANDBOX)
 // should be called only once when the server starts
 func Init() {
 	for i := 0; i < cfg.MAX_SANDBOX; i++ {
-		exec.Command("isolate", "--cg", "--cleanup", "--box-id", fmt.Sprint(i)).Run()
 		availableIDs <- i
 	}
 }
@@ -37,6 +36,8 @@ type (
 
 func New() (Sandbox, error) {
 	id := <-availableIDs
+	exec.Command("isolate", "--cg", "--cleanup", "--box-id", fmt.Sprint(id)).Run()
+
 	sandbox := Sandbox{
 		Id: fmt.Sprint(id),
 	}
