@@ -1,6 +1,7 @@
 package submission
 
 import (
+	"bytes"
 	"codexec/internal/isolate"
 	"fmt"
 	"os"
@@ -40,6 +41,11 @@ func python3TaskHandler(s *Submission, t *Task, r chan Result, wg *sync.WaitGrou
 	result.Status = meta["status"]
 
 	fmt.Println("result", result)
+
+	if result.Status == "Accepted" && len(t.ExpectedOutput) != 0 &&
+		!bytes.Equal(t.ExpectedOutput, result.Stdout) {
+		result.Status = "Wrong Answer"
+	}
 
 	go callback(t, &result, t.Token)
 	r <- result
